@@ -1,26 +1,60 @@
-import React from "react";
+import React, { useState,useEffect} from 'react';
+import api from './services/api';
 
 import "./styles.css";
 
+
 function App() {
+  const [repository,setRepository] = useState([]);
+  const [flag,setFlag] = useState(false);
+  useEffect(()=>{ // Assim com useEffect quando carrega a pagina ele busca todos os projetos 
+    if(flag){
+      api.get('repositories').then(response=> {
+          setRepository(response.data);
+          setFlag(false);
+      });
+    }
+  //},[repository]);
+ },[flag]);
+
   async function handleAddRepository() {
-    // TODO
+    const response = await api.post('repositories',{
+      url: "https://github.com/Rocketseat/unform",
+      title: `Novo Projeto ${Date.now()}`,
+      techs: ["React", "ReactNative", "TypeScript","Node","C"]	
+      
+    }); 
+    const newRepository = response.data;
+    setRepository([...repository,newRepository]);
+    console.log(repository);
+
   }
 
   async function handleRemoveRepository(id) {
-    // TODO
+    const retorno = await api.delete(`repositories/${id}`);
+    setFlag(true);
+    //console.log(repository);
+    
   }
 
   return (
+   
     <div>
       <ul data-testid="repository-list">
-        <li>
+        {/* <li>
           Repositório 1
 
           <button onClick={() => handleRemoveRepository(1)}>
             Remover
           </button>
-        </li>
+        </li> */}
+         {/* {repository.map(reposit =>  <li key={reposit.id}> Title: {reposit.title} URL: {reposit.url}  */}
+        {repository.map(reposit =>  <li key={reposit.id}>{reposit.title} 
+                                      <button onClick={() => handleRemoveRepository(reposit.id)}>
+                                          Remover
+                                      </button>  
+                                   </li> )}
+
       </ul>
 
       <button onClick={handleAddRepository}>Adicionar</button>
