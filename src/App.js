@@ -1,8 +1,6 @@
 import React, { useState,useEffect} from 'react';
 import api from './services/api';
-
 import "./styles.css";
-
 
 function App() {
   const [repository,setRepository] = useState([]);
@@ -14,7 +12,6 @@ function App() {
           setFlag(false);
       });
     }
-  //},[repository]);
  },[flag]);
 
   async function handleAddRepository() {
@@ -31,9 +28,10 @@ function App() {
   }
 
   async function handleRemoveRepository(id) {
-    const retorno = await api.delete(`repositories/${id}`);
+   await api.delete(`repositories/${id}`);
     setFlag(true);
-    //console.log(repository);
+
+    console.log(repository);
     
   }
 
@@ -41,22 +39,13 @@ function App() {
    
     <div>
       <ul data-testid="repository-list">
-        {/* <li>
-          Repositório 1
-
-          <button onClick={() => handleRemoveRepository(1)}>
-            Remover
-          </button>
-        </li> */}
-         {/* {repository.map(reposit =>  <li key={reposit.id}> Title: {reposit.title} URL: {reposit.url}  */}
         {repository.map(reposit =>  <li key={reposit.id}>{reposit.title} 
                                       <button onClick={() => handleRemoveRepository(reposit.id)}>
                                           Remover
                                       </button>  
-                                   </li> )}
+                                    </li> )}
 
       </ul>
-
       <button onClick={handleAddRepository}>Adicionar</button>
     </div>
   );
